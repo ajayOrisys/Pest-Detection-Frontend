@@ -1,10 +1,22 @@
-// app/index.js
-import React from "react";
-import AppNavigator from "./navigation/AppNavigator";
-import { Text } from "react-native";
+import { React } from "react";
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
+import { StyleSheet } from "react-native";
+import { COLORS } from "../constants";
+import Header from "../components/common/header";
 
-const App = () => {
-	return <AppNavigator />;
+const styles = StyleSheet.create({
+	container: {
+		padding: 30,
+	},
+});
+
+const Home = () => {
+	return (
+		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
+			<Header />
+			<ScrollView></ScrollView>
+		</SafeAreaView>
+	);
 };
 
-export default App;
+export default Home;
