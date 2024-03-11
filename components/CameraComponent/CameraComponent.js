@@ -1,11 +1,11 @@
+// CameraComponent.js
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Text, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { Camera } from "expo-camera";
 
 const CameraComponent = ({ onPictureTaken, onClose }) => {
 	const [type, setType] = useState(Camera.Constants.Type.back);
 	const [hasPermission, setHasPermission] = useState(null);
-	const [isCameraOpen, setIsCameraOpen] = useState(false);
 	const cameraRef = useRef(null);
 
 	useEffect(() => {
@@ -13,7 +13,7 @@ const CameraComponent = ({ onPictureTaken, onClose }) => {
 			const { status } = await Camera.requestCameraPermissionsAsync();
 			setHasPermission(status === "granted");
 		})();
-	}, [hasPermission]); // Include hasPermission in the dependency array
+	}, []);
 
 	const toggleCameraType = () => {
 		setType((current) =>
@@ -35,14 +35,6 @@ const CameraComponent = ({ onPictureTaken, onClose }) => {
 		onPictureTaken(photo.uri);
 	};
 
-	const handleOpenCamera = () => {
-		setIsCameraOpen(true);
-	};
-
-	const handleCloseCamera = () => {
-		setIsCameraOpen(false);
-	};
-
 	if (hasPermission === null) {
 		// Camera permissions are still loading
 		return <View />;
@@ -61,39 +53,23 @@ const CameraComponent = ({ onPictureTaken, onClose }) => {
 
 	return (
 		<View>
-			{!isCameraOpen && (
-				<TouchableOpacity onPress={handleOpenCamera}>
-					<Text style={{ color: "black" }}>Open Camera</Text>
-				</TouchableOpacity>
-			)}
-
-			{isCameraOpen && (
+			<Camera
+				style={{ flex: 0, height: 500 }}
+				type={type}
+				ref={cameraRef}
+			>
 				<View>
-					<Camera
-						style={{ flex: 1, height: 500 }}
-						type={type}
-						ref={cameraRef}
-					>
-						<View>
-							<TouchableOpacity onPress={toggleCameraType}>
-								<Text style={{ color: "black" }}>
-									Flip Camera
-								</Text>
-							</TouchableOpacity>
-							<TouchableOpacity onPress={handleTakePicture}>
-								<Text style={{ color: "black" }}>
-									Take Picture
-								</Text>
-							</TouchableOpacity>
-							<TouchableOpacity onPress={handleCloseCamera}>
-								<Text style={{ color: "black" }}>
-									Close Camera
-								</Text>
-							</TouchableOpacity>
-						</View>
-					</Camera>
+					<TouchableOpacity onPress={toggleCameraType}>
+						<Text style={{ color: "white" }}>Flip Camera</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={handleTakePicture}>
+						<Text style={{ color: "white" }}>Take Picture</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={onClose}>
+						<Text style={{ color: "white" }}>Close Camera</Text>
+					</TouchableOpacity>
 				</View>
-			)}
+			</Camera>
 		</View>
 	);
 };
