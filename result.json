@@ -1,0 +1,22 @@
+{
+    "predictions": {
+        "predictions": [
+            {
+                "confidence": 0.9999994039535522,
+                "label": "banana_defected_sigatoka"
+            },
+            {
+                "confidence": 6.104710905674438e-07,
+                "label": "banana_defected_cordana"
+            },
+            {
+                "confidence": 2.7720671980091538e-08,
+                "label": "banana_healthy"
+            },
+            {
+                "confidence": 8.73051519967305e-10,
+                "label": "banana_defected_pestalotiopsis"
+            }
+        ]
+    }
+}

@@ -1,5 +1,6 @@
 // ImageSelector.js
 import React, { useState } from "react";
+import axios from "axios";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import CameraComponent from "./CameraComponent/CameraComponent";
 import UploadImageComponent from "./UploadImageComponent/UploadImageComponent";
@@ -36,34 +37,39 @@ const ImageSelector = () => {
 	};
 
 	const handleDetect = async () => {
+		// await axios
+		// 	.get("http://www.google.com")
+		// 	.then((response) => console.log(response.data))
+		// 	.catch((error) => console.log(error));
+
 		try {
-			const apiUrl = "http://127.0.0.1:8000/upload";
-
+			const apiUrl = "http://192.168.1.110:8000/upload";
 			const formData = new FormData();
-			formData.append("file", {
-				uri: selectedImage,
-				type: "image/jpeg",
-				name: "image.jpg",
-			});
 
-			const response = await fetch(apiUrl, {
-				method: "POST",
-				body: formData,
+			// Assuming selectedImage is a File object, if not, modify accordingly
+			formData.append("file", selectedImage);
+
+			console.log("Sending API request to:", apiUrl);
+			console.log("Form Data:", formData);
+
+			const response = await axios.post(apiUrl, formData, {
 				headers: {
+					Accept: "application/json, text/plain, /",
 					"Content-Type": "multipart/form-data",
 				},
 			});
 
-			if (response.ok) {
-				const result = await response.json();
-				// Handle the API result as needed
-				console.log("API Result:", result);
+			console.log("API Response Status:", response.status);
+
+			if (response.status === 200) {
+				console.log("API Result:", response.data);
 				setShowResults(true);
 			} else {
 				console.error("Error in API request:", response.statusText);
+				console.log("API Response Data:", response.data);
+				console.log("Full API Response:", response);
 			}
 		} catch (error) {
-			console.log("here");
 			console.error("Error in API request:", error);
 		}
 	};
