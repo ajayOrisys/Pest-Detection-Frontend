@@ -3,6 +3,14 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { Camera } from "expo-camera";
 
+if (typeof window !== "undefined" && !window.Worker) {
+	// Create a mock Worker (simplified example)
+	window.Worker = function () {
+		this.onmessage = () => {};
+		this.postMessage = () => {};
+	};
+}
+
 const CameraComponent = ({ onPictureTaken, onClose }) => {
 	const [type, setType] = useState(Camera.Constants.Type.back);
 	const [hasPermission, setHasPermission] = useState(null);
@@ -53,23 +61,25 @@ const CameraComponent = ({ onPictureTaken, onClose }) => {
 
 	return (
 		<View>
-			<Camera
-				style={{ flex: 0, height: 500 }}
-				type={type}
-				ref={cameraRef}
-			>
-				<View>
-					<TouchableOpacity onPress={toggleCameraType}>
-						<Text style={{ color: "white" }}>Flip Camera</Text>
-					</TouchableOpacity>
-					<TouchableOpacity onPress={handleTakePicture}>
-						<Text style={{ color: "white" }}>Take Picture</Text>
-					</TouchableOpacity>
-					<TouchableOpacity onPress={onClose}>
-						<Text style={{ color: "white" }}>Close Camera</Text>
-					</TouchableOpacity>
-				</View>
-			</Camera>
+			
+				<Camera
+					style={{ flex: 0, height: 500 }}
+					type={type}
+					ref={cameraRef}
+				>
+					<View>
+						<TouchableOpacity onPress={toggleCameraType}>
+							<Text style={{ color: "white" }}>Flip Camera</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={handleTakePicture}>
+							<Text style={{ color: "white" }}>Take Picture</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={onClose}>
+							<Text style={{ color: "white" }}>Close Camera</Text>
+						</TouchableOpacity>
+					</View>
+				</Camera>
+			
 		</View>
 	);
 };

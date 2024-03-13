@@ -2,39 +2,59 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
-const DetectionResultsComponent = ({ selectedImage }) => {
-  // Placeholder function for processing results
-  const processResults = () => {
-    // Implement your logic to process results here
-    console.log("Processing results...");
-  };
+const DetectionResultsComponent = ({ selectedImage, predictions }) => {
+	// Placeholder function for processing results
 
-  return (
-    <View style={styles.container}>
-      <Text>Detection Results</Text>
-      <Image source={{ uri: selectedImage }} style={styles.image} />
-      <Text>Additional result information goes here</Text>
-      <Text>Another result detail</Text>
-      {/* Add more result components or logic here */}
-      <View>
-        <Text>Process Results:</Text>
-        <Text onPress={processResults}>Click to Process</Text>
-      </View>
-    </View>
-  );
+	const defectLabel = predictions["predictions"][0]["label"];
+	console.log(defectLabel);
+
+	const processResults = () => {
+		// Implement your logic to process results here
+		console.log("Processing results...");
+	};
+
+	return (
+		<View style={styles.container}>
+			<Text>Detection Results</Text>
+			<View style={styles.imageContainer}>
+				<Image source={{ uri: selectedImage }} style={styles.image} />
+			</View>
+			<Text style={styles.defectedTextContainer}>
+				Prediction:{" "}
+				<Text style={styles.defectedText}>{defectLabel}</Text>
+			</Text>
+			<View>
+				<Text>Process Results:</Text>
+				<Text onPress={processResults}>Click to Process</Text>
+			</View>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginVertical: 10,
-  },
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	imageContainer: {
+		flex: 0,
+		width: 200,
+		height: 200,
+		marginTop: 300,
+	},
+	image: {
+		width: "100%",
+		height: "100%",
+		marginVertical: 10,
+	},
+	defectedTextContainer: {
+		height: 30,
+		marginTop: 80,
+	},
+	defectedText: {
+		fontWeight: "bold",
+	},
 });
 
 export default DetectionResultsComponent;

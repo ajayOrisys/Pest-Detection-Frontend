@@ -11,6 +11,7 @@ const ImageSelector = () => {
 	const [showCamera, setShowCamera] = useState(false);
 	const [showUpload, setShowUpload] = useState(false);
 	const [showResults, setShowResults] = useState(false);
+	const [predictions, setPredictions] = useState(null); // State to hold predictions
 
 	const handlePictureTaken = (uri) => {
 		setShowCamera(false);
@@ -34,44 +35,41 @@ const ImageSelector = () => {
 
 	const handleClearImage = () => {
 		setSelectedImage(null);
+		setShowResults(false); // Reset showResults state when clearing the image
 	};
 
 	const handleDetect = async () => {
-		// await axios
-		// 	.get("http://www.google.com")
-		// 	.then((response) => console.log(response.data))
-		// 	.catch((error) => console.log(error));
-
 		try {
-			const apiUrl = "http://192.168.1.110:8000/upload";
-			const formData = new FormData();
-
-			// Assuming selectedImage is a File object, if not, modify accordingly
-			formData.append("file", selectedImage);
-
-			console.log("Sending API request to:", apiUrl);
-			console.log("Form Data:", formData);
-
-			const response = await axios.post(apiUrl, formData, {
-				headers: {
-					Accept: "application/json, text/plain, /",
-					"Content-Type": "multipart/form-data",
-				},
-			});
-
-			console.log("API Response Status:", response.status);
-
-			if (response.status === 200) {
-				console.log("API Result:", response.data);
-				setShowResults(true);
-			} else {
-				console.error("Error in API request:", response.statusText);
-				console.log("API Response Data:", response.data);
-				console.log("Full API Response:", response);
-			}
+			const response = require("../result.json"); // Read local JSON file
+			setPredictions(response.predictions); // Set predictions state
+			setShowResults(true); // Show results
 		} catch (error) {
-			console.error("Error in API request:", error);
+			console.error("Error reading local file:", error);
 		}
+		//     try {
+		//       const apiUrl = "https://ajayorisys.pythonanywhere.com/test";
+		//       const formData = new FormData();
+
+		//       // Assuming selectedImage is a File object, if not, modify accordingly
+		//       formData.append("file", selectedImage);
+
+		//       const response = await axios.post(apiUrl, formData, {
+		//         headers: {
+		//           Accept: "application/json, text/plain, /",
+		//           "Content-Type": "multipart/form-data",
+		//         },
+		//       });
+
+		//       if (response.status === 200) {
+		//         // If response is successful, set predictions and showResults to true
+		//         setPredictions(response.data.predictions);
+		//         setShowResults(true);
+		//       } else {
+		//         console.error("Error in API request:", response.statusText);
+		//       }
+		//     } catch (error) {
+		//       console.error("Error in API request:", error);
+		//     }
 	};
 
 	return (
@@ -86,8 +84,11 @@ const ImageSelector = () => {
 					onImageSelected={handleImageSelected}
 					onClose={() => setShowUpload(false)}
 				/>
-			) : showResults ? (
-				<DetectionResultsComponent selectedImage={selectedImage} />
+			) : showResults ? ( // Render DetectionResultsComponent when showResults is true
+				<DetectionResultsComponent
+					selectedImage={selectedImage}
+					predictions={predictions} // Pass predictions as prop
+				/>
 			) : (
 				<View>
 					<TouchableOpacity onPress={handleOpenCamera}>
