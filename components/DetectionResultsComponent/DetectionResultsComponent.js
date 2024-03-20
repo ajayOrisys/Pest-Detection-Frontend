@@ -5,8 +5,6 @@ import { View, Text, Image, StyleSheet } from "react-native";
 const DetectionResultsComponent = ({ selectedImage, predictions }) => {
 	// Placeholder function for processing results
 
-	const defectLabel = predictions["predictions"][0]["label"];
-	console.log(defectLabel);
 
 	const processResults = () => {
 		// Implement your logic to process results here
@@ -21,7 +19,7 @@ const DetectionResultsComponent = ({ selectedImage, predictions }) => {
 			</View>
 			<Text style={styles.defectedTextContainer}>
 				Prediction:{" "}
-				<Text style={styles.defectedText}>{defectLabel}</Text>
+				<Text style={styles.defectedText}>{predictions}</Text>
 			</Text>
 			<View>
 				<Text>Process Results:</Text>

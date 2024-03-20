@@ -26,12 +26,12 @@ const UploadImageComponent = ({ onImageSelected, onClose }) => {
 			const result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
-				base64: true,
+				base64: false,
 			});
 
 			if (!result.canceled) {
 				onImageSelected(result.assets[0].uri);
-
+				
 				// Call your API with the image data (result.base64)
 				// Handle the API response
 			} else {

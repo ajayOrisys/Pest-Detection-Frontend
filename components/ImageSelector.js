@@ -39,37 +39,41 @@ const ImageSelector = () => {
 	};
 
 	const handleDetect = async () => {
+		
+
 		try {
-			const response = require("../result.json"); // Read local JSON file
-			setPredictions(response.predictions); // Set predictions state
-			setShowResults(true); // Show results
+			const apiUrl = "http://192.168.1.42:8000/upload";
+			const formData = new FormData();
+
+			if (!selectedImage) {
+				console.error("No image selected");
+				return;
+			}
+
+			// Assuming selectedImage is a File object, if not, modify accordingly
+			formData.append("file", selectedImage);
+			console.log(formData)
+			
+
+			const response = await axios.post(apiUrl, formData, {
+				headers: {
+					Accept: "application/json, text/plain, /",
+					"Content-Type": "multipart/form-data",
+				},
+			});
+			console.log(response);
+
+			if (response.status === 200) {
+				// If response is successful, set predictions and showResults to true
+				setPredictions(response.data.predictions);
+				console.log(response.data.predictions);
+				setShowResults(true);
+			} else {
+				console.error("Error in API request:", response.statusText);
+			}
 		} catch (error) {
-			console.error("Error reading local file:", error);
+			console.error("Error in API request:", error);
 		}
-		//     try {
-		//       const apiUrl = "https://ajayorisys.pythonanywhere.com/test";
-		//       const formData = new FormData();
-
-		//       // Assuming selectedImage is a File object, if not, modify accordingly
-		//       formData.append("file", selectedImage);
-
-		//       const response = await axios.post(apiUrl, formData, {
-		//         headers: {
-		//           Accept: "application/json, text/plain, /",
-		//           "Content-Type": "multipart/form-data",
-		//         },
-		//       });
-
-		//       if (response.status === 200) {
-		//         // If response is successful, set predictions and showResults to true
-		//         setPredictions(response.data.predictions);
-		//         setShowResults(true);
-		//       } else {
-		//         console.error("Error in API request:", response.statusText);
-		//       }
-		//     } catch (error) {
-		//       console.error("Error in API request:", error);
-		//     }
 	};
 
 	return (
