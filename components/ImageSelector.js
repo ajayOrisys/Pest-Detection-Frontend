@@ -5,6 +5,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import CameraComponent from "./CameraComponent/CameraComponent";
 import UploadImageComponent from "./UploadImageComponent/UploadImageComponent";
 import DetectionResultsComponent from "./DetectionResultsComponent/DetectionResultsComponent";
+import * as FileSystem from "expo-file-system";
 
 const ImageSelector = () => {
 	const [selectedImage, setSelectedImage] = useState(null);
@@ -39,8 +40,6 @@ const ImageSelector = () => {
 	};
 
 	const handleDetect = async () => {
-		
-
 		try {
 			const apiUrl = "http://192.168.1.42:8000/upload";
 			const formData = new FormData();
@@ -50,26 +49,49 @@ const ImageSelector = () => {
 				return;
 			}
 
-			// Assuming selectedImage is a File object, if not, modify accordingly
-			formData.append("file", selectedImage);
-			console.log(formData)
-			
+			console.log(selectedImage);
 
-			const response = await axios.post(apiUrl, formData, {
+			// Fetch the image data
+			const response = await fetch(selectedImage);
+			const blob = await response.blob();
+			const file = new File([blob], selectedImage.split("/").pop(), {
+				type: "image/jpeg",
+			});
+
+			console.log("Check 1");
+			console.log(file);
+
+			// Append the file object to formData
+			formData.append("file", file);
+			console.log(formData)
+
+			console.log("Check 2");
+
+			const axiosConfig = {
 				headers: {
 					Accept: "application/json, text/plain, /",
 					"Content-Type": "multipart/form-data",
 				},
-			});
-			console.log(response);
+			};
+			console.log(apiUrl)
+			const axiosResponse = await axios.post(
+				apiUrl,
+				formData,
+				axiosConfig
+			);
+			console.log("Check 3");
+			console.log(axiosResponse);
 
-			if (response.status === 200) {
+			if (axiosResponse.status === 200) {
 				// If response is successful, set predictions and showResults to true
-				setPredictions(response.data.predictions);
-				console.log(response.data.predictions);
+				setPredictions(axiosResponse.data.predictions);
+				console.log(axiosResponse.data.predictions);
 				setShowResults(true);
 			} else {
-				console.error("Error in API request:", response.statusText);
+				console.error(
+					"Error in API request 200:",
+					axiosResponse.statusText
+				);
 			}
 		} catch (error) {
 			console.error("Error in API request:", error);
