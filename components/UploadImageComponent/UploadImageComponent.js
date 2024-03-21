@@ -30,7 +30,7 @@ const UploadImageComponent = ({ onImageSelected, onClose }) => {
 			});
 
 			if (!result.canceled) {
-				onImageSelected(result.assets[0].uri);
+				onImageSelected(result.assets[0]);
 				
 				// Call your API with the image data (result.base64)
 				// Handle the API response

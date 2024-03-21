@@ -38,10 +38,12 @@ const ImageSelector = () => {
 		setSelectedImage(null);
 		setShowResults(false); // Reset showResults state when clearing the image
 	};
+	console.log(selectedImage, "selectedImage");
 
 	const handleDetect = async () => {
+		const apiUrl = "http://192.168.1.42:8000/upload";
+
 		try {
-			const apiUrl = "http://192.168.1.42:8000/upload";
 			const formData = new FormData();
 
 			if (!selectedImage) {
@@ -49,43 +51,29 @@ const ImageSelector = () => {
 				return;
 			}
 
-			console.log(selectedImage);
-
-			// Fetch the image data
-			const response = await fetch(selectedImage);
-			const blob = await response.blob();
-			const file = new File([blob], selectedImage.split("/").pop(), {
+			formData.append("file", {
+				uri: selectedImage?.uri,
+				name: "image.jpg",
 				type: "image/jpeg",
 			});
 
-			console.log("Check 1");
-			console.log(file);
-
-			// Append the file object to formData
-			formData.append("file", file);
-			console.log(formData)
-
 			console.log("Check 2");
 
-			const axiosConfig = {
+			const axiosResponse = await axios.post(apiUrl, formData, {
 				headers: {
-					Accept: "application/json, text/plain, /",
 					"Content-Type": "multipart/form-data",
 				},
-			};
-			console.log(apiUrl)
-			const axiosResponse = await axios.post(
-				apiUrl,
-				formData,
-				axiosConfig
-			);
+			});
+			console.log("Axios Response:", axiosResponse.data);
+			// Handle response...
+
 			console.log("Check 3");
 			console.log(axiosResponse);
 
 			if (axiosResponse.status === 200) {
 				// If response is successful, set predictions and showResults to true
 				setPredictions(axiosResponse.data.predictions);
-				console.log(axiosResponse.data.predictions);
+
 				setShowResults(true);
 			} else {
 				console.error(
@@ -94,8 +82,31 @@ const ImageSelector = () => {
 				);
 			}
 		} catch (error) {
-			console.error("Error in API request:", error);
+			console.error("Error occurred:", error);
 		}
+		// const formData = new FormData();
+		// formData.append('file', {
+		//   uri: selectedImage?.uri,
+		//   name: 'image.jpg',
+		//   type: 'image/jpeg',
+		// });
+
+		// try {
+		//   const response = await fetch(apiUrl, {
+		// 	method: 'POST',
+		// 	body: formData,
+		// 	headers: {
+		// 	  'Content-Type': 'multipart/form-data',
+		// 	},
+		//   });
+
+		//   const data = await response.json();
+		//   console.log('File uploaded successfully:', data);
+		//   // Handle success
+		// } catch (error) {
+		//   console.error('Error uploading file:', error.message);
+		//   // Handle error
+		// }
 	};
 
 	return (
@@ -130,7 +141,7 @@ const ImageSelector = () => {
 				<View>
 					<Text>Selected Image:</Text>
 					<Image
-						source={{ uri: selectedImage }}
+						source={{ uri: selectedImage?.uri }}
 						style={{ width: 200, height: 200 }}
 					/>
 					<TouchableOpacity onPress={handleClearImage}>

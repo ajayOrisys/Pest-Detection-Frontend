@@ -15,11 +15,11 @@ const DetectionResultsComponent = ({ selectedImage, predictions }) => {
 		<View style={styles.container}>
 			<Text>Detection Results</Text>
 			<View style={styles.imageContainer}>
-				<Image source={{ uri: selectedImage }} style={styles.image} />
+				<Image source={{ uri: selectedImage?.uri }} style={styles.image} />
 			</View>
 			<Text style={styles.defectedTextContainer}>
 				Prediction:{" "}
-				<Text style={styles.defectedText}>{predictions}</Text>
+				<Text style={styles.defectedText}>{predictions?.predictions[0].label}</Text>
 			</Text>
 			<View>
 				<Text>Process Results:</Text>
